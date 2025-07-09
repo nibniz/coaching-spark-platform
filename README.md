@@ -1,73 +1,107 @@
-# Welcome to your Lovable project
+# Coaching Spark Platform
 
-## Project info
+A comprehensive mentoring and coaching platform that connects learners with expert mentors.
 
-**URL**: https://lovable.dev/projects/fc7d6d88-f685-4031-8e5f-dc4a9d6c9cfc
+## Project Structure
 
-## How can I edit this code?
-
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/fc7d6d88-f685-4031-8e5f-dc4a9d6c9cfc) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```
+coaching-spark-platform/
+├── frontend/              # Frontend React application
+│   ├── src/              # Source code
+│   │   ├── app/          # App configuration & routing
+│   │   ├── features/     # Feature-based modules
+│   │   ├── shared/       # Shared components & utilities
+│   │   └── assets/       # Static assets
+│   ├── public/           # Public assets
+│   └── package.json      # Frontend dependencies
+├── README.md             # This file
+└── .gitignore           # Git ignore rules
 ```
 
-**Edit a file directly in GitHub**
+## Features
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### For Learners
+- **Mentor Discovery**: Browse and search for expert mentors
+- **Session Booking**: Schedule 1:1 mentoring sessions
+- **Progress Tracking**: Monitor your learning goals
+- **Session History**: Review past sessions and feedback
 
-**Use GitHub Codespaces**
+### For Mentors
+- **Profile Management**: Create and manage your mentor profile
+- **Session Management**: Handle bookings and schedules
+- **Earnings Dashboard**: Track your income and analytics
+- **Review System**: Receive and manage student feedback
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Tech Stack
 
-## What technologies are used for this project?
+### Frontend
+- **React 18** with TypeScript
+- **Vite** for build tooling
+- **React Router** for navigation
+- **TanStack Query** for data fetching
+- **Shadcn/ui** + Radix UI for components
+- **Tailwind CSS** for styling
+- **React Hook Form** for forms
+- **Zod** for validation
 
-This project is built with:
+## Getting Started
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Prerequisites
+- Node.js 18+ or Bun
+- npm, yarn, or bun package manager
 
-## How can I deploy this project?
+### Frontend Development
 
-Simply open [Lovable](https://lovable.dev/projects/fc7d6d88-f685-4031-8e5f-dc4a9d6c9cfc) and click on Share -> Publish.
+1. Navigate to the frontend directory:
+   ```bash
+   cd frontend
+   ```
 
-## Can I connect a custom domain to my Lovable project?
+2. Install dependencies:
+   ```bash
+   npm install
+   # or
+   yarn install
+   # or
+   bun install
+   ```
 
-Yes, you can!
+3. Start the development server:
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   # or
+   bun dev
+   ```
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+4. Open [http://localhost:5173](http://localhost:5173) in your browser
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+### Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run lint` - Run ESLint
+
+## Project Organization
+
+The frontend follows a feature-based architecture:
+
+- **`app/`** - App-level configuration, providers, and routing
+- **`features/`** - Feature modules (auth, mentors, sessions, dashboard, onboarding)
+- **`shared/`** - Reusable components, utilities, types, and constants
+
+This organization makes the codebase more maintainable and scalable.
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
+
+## License
+
+This project is licensed under the MIT License.
