@@ -6,9 +6,11 @@ import MentorProfile from "@/features/mentors/MentorProfile";
 import BookSession from "@/features/sessions/BookSession";
 import SignupMentor from "@/features/onboarding/SignupMentor";
 import SignupUser from "@/features/onboarding/SignupUser";
+import OnboardingQuestionnaire from "@/features/onboarding/OnboardingQuestionnaire";
 import Login from "@/features/auth/Login";
 import MentorDashboard from "@/features/dashboard/MentorDashboard";
 import UserDashboard from "@/features/dashboard/UserDashboard";
+import MentorProfileSettings from "@/features/dashboard/MentorProfileSettings";
 
 export const AppRoutes = () => {
   return (
@@ -19,9 +21,11 @@ export const AppRoutes = () => {
       <Route path="/book/:id" element={<BookSession />} />
       <Route path="/signup/mentor" element={<SignupMentor />} />
       <Route path="/signup/user" element={<SignupUser />} />
+      <Route path="/onboarding" element={<OnboardingQuestionnaire />} />
       <Route path="/login" element={<Login />} />
       <Route path="/mentor-dashboard" element={<MentorDashboard />} />
       <Route path="/user-dashboard" element={<UserDashboard />} />
+      <Route path="/mentor-profile-settings" element={<MentorProfileSettings />} />
       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
       <Route path="*" element={<NotFound />} />
     </Routes>

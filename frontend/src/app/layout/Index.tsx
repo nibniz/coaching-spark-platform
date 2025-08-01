@@ -62,46 +62,64 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       {/* Navigation */}
       <header className="border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 sticky top-0 z-50">
-        <div className="container mx-auto px-4">
+        <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-r from-primary to-primary-glow rounded-lg flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-sm">M</span>
+            {/* Left side: Logo + Navigation */}
+            <div className="flex items-center space-x-8 -ml-2">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-gradient-to-r from-primary to-primary-glow rounded-lg flex items-center justify-center">
+                  <span className="text-primary-foreground font-bold text-base">M</span>
+                </div>
+                <span className="text-2xl font-bold">MentorMatch</span>
               </div>
-              <span className="text-xl font-bold">MentorMatch</span>
+              
+              <nav className="hidden md:flex items-center space-x-8">
+                <Link to="/mentors" className="text-foreground hover:text-primary transition-colors">
+                  Find Mentors
+                </Link>
+                <Link to="/how-it-works" className="text-foreground hover:text-primary transition-colors">
+                  How It Works
+                </Link>
+                <Link to="/pricing" className="text-foreground hover:text-primary transition-colors">
+                  Pricing
+                </Link>
+                <Link to="/about" className="text-foreground hover:text-primary transition-colors">
+                  About Us
+                </Link>
+                <Link to="/contact" className="text-foreground hover:text-primary transition-colors">
+                  Contact
+                </Link>
+                <Link to="/resources" className="text-foreground hover:text-primary transition-colors">
+                  Resources
+                </Link>
+              </nav>
             </div>
-            
-            <nav className="hidden md:flex items-center space-x-8">
-              <Link to="/mentors" className="text-foreground hover:text-primary transition-colors">
-                Find Mentors
-              </Link>
-              <Link to="/how-it-works" className="text-foreground hover:text-primary transition-colors">
-                How It Works
-              </Link>
-              <Link to="/pricing" className="text-foreground hover:text-primary transition-colors">
-                Pricing
-              </Link>
-              <Link to="/signup/user" className="text-foreground hover:text-primary transition-colors">
-                Sign In
-              </Link>
-              <Link to="/signup/mentor">
-                <Button>Become a Mentor</Button>
-              </Link>
-            </nav>
 
-            <button 
-              className="md:hidden"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
-              {isMenuOpen ? <X /> : <Menu />}
-            </button>
+            {/* Right side: Action buttons + Mobile menu */}
+            <div className="flex items-center space-x-4">
+              <div className="hidden md:flex items-center space-x-4">
+                <Link to="/login" className="border border-primary text-primary hover:text-primary px-4 py-2 rounded-full transition-colors">
+                  Login
+                </Link>
+                <Link to="/signup/mentor">
+                  <Button className="rounded-full">Become a Mentor</Button>
+                </Link>
+              </div>
+
+              <button 
+                className="md:hidden"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+              >
+                {isMenuOpen ? <X /> : <Menu />}
+              </button>
+            </div>
           </div>
         </div>
 
         {/* Mobile menu */}
         {isMenuOpen && (
           <div className="md:hidden border-t bg-white">
-            <div className="container mx-auto px-4 py-4 space-y-4">
+            <div className="max-w-7xl mx-auto px-6 py-4 space-y-4">
               <Link to="/mentors" className="block text-foreground hover:text-primary transition-colors">
                 Find Mentors
               </Link>
@@ -111,11 +129,20 @@ const Index = () => {
               <Link to="/pricing" className="block text-foreground hover:text-primary transition-colors">
                 Pricing
               </Link>
-              <Link to="/signup/user" className="block text-foreground hover:text-primary transition-colors">
-                Sign In
+              <Link to="/about" className="block text-foreground hover:text-primary transition-colors">
+                About Us
+              </Link>
+              <Link to="/contact" className="block text-foreground hover:text-primary transition-colors">
+                Contact
+              </Link>
+              <Link to="/resources" className="block text-foreground hover:text-primary transition-colors">
+                Resources
+              </Link>
+              <Link to="/login" className="block border border-primary text-primary hover:text-primary px-4 py-2 rounded-full transition-colors text-center">
+                Login
               </Link>
               <Link to="/signup/mentor" className="block">
-                <Button className="w-full">Become a Mentor</Button>
+                <Button className="w-full rounded-full">Become a Mentor</Button>
               </Link>
             </div>
           </div>
@@ -125,8 +152,8 @@ const Index = () => {
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 to-primary-glow/10">
         <div className="container mx-auto px-4 py-20 lg:py-32">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-8">
+          <div className="flex flex-col items-center text-center max-w-4xl mx-auto">
+            <div className="space-y-8 w-full">
               <div className="space-y-6">
                 <Badge variant="secondary" className="w-fit">
                   🚀 Launch Your Growth Journey
@@ -138,13 +165,13 @@ const Index = () => {
                   </span>{" "}
                   Who Accelerate Your Success
                 </h1>
-                <p className="text-xl text-muted-foreground max-w-lg">
+                <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
                   Whether you're seeking career guidance, skill development, or life coaching, 
                   find verified experts who understand your goals and provide personalized guidance.
                 </p>
               </div>
               
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link to="/mentors">
                   <Button size="lg" className="w-full sm:w-auto">
                     Find Your Mentor
@@ -159,7 +186,7 @@ const Index = () => {
                 </Link>
               </div>
 
-              <div className="flex items-center space-x-8 pt-4">
+              <div className="flex items-center space-x-8 pt-4 justify-center">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-primary">1000+</div>
                   <div className="text-sm text-muted-foreground">Expert Mentors</div>
@@ -172,58 +199,6 @@ const Index = () => {
                   <div className="text-2xl font-bold text-primary">4.9★</div>
                   <div className="text-sm text-muted-foreground">Average Rating</div>
                 </div>
-              </div>
-            </div>
-
-            <div className="relative">
-              <div className="grid grid-cols-2 gap-4">
-                <Card className="transform rotate-2 hover:rotate-0 transition-transform duration-300">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
-                        <span className="text-primary-foreground font-semibold">SJ</span>
-                      </div>
-                      <div>
-                        <CardTitle className="text-sm">Sarah Johnson</CardTitle>
-                        <CardDescription className="text-xs">Career Coach</CardDescription>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <div className="flex items-center space-x-1">
-                      {[1,2,3,4,5].map((star) => (
-                        <Star key={star} className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                      ))}
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-2">
-                      "Helped me land my dream job in tech!"
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card className="transform -rotate-2 hover:rotate-0 transition-transform duration-300 mt-8">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-10 h-10 bg-primary-glow rounded-full flex items-center justify-center">
-                        <span className="text-primary-foreground font-semibold">MD</span>
-                      </div>
-                      <div>
-                        <CardTitle className="text-sm">Mike Davis</CardTitle>
-                        <CardDescription className="text-xs">Business Mentor</CardDescription>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <div className="flex items-center space-x-1">
-                      {[1,2,3,4,5].map((star) => (
-                        <Star key={star} className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                      ))}
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-2">
-                      "Scaled my startup to $1M revenue"
-                    </p>
-                  </CardContent>
-                </Card>
               </div>
             </div>
           </div>

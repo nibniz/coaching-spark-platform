@@ -122,6 +122,11 @@ const MentorDashboard = () => {
               <Button variant="ghost" size="sm">
                 <Bell className="w-4 h-4" />
               </Button>
+              <Link to="/mentor-profile-settings">
+                <Button variant="ghost" size="sm">
+                  <Settings className="w-4 h-4" />
+                </Button>
+              </Link>
               <div className="flex items-center space-x-2">
                 <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                   <span className="text-primary-foreground font-semibold text-sm">{user.avatar}</span>
@@ -151,10 +156,12 @@ const MentorDashboard = () => {
                   View Profile
                 </Button>
               </Link>
-              <Button>
-                <Edit className="w-4 h-4 mr-2" />
-                Edit Profile
-              </Button>
+              <Link to="/mentor-profile-settings">
+                <Button>
+                  <Edit className="w-4 h-4 mr-2" />
+                  Edit Profile
+                </Button>
+              </Link>
             </div>
           </div>
 

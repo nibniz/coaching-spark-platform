@@ -2,8 +2,6 @@ import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/components/ui/card";
 import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
-import { Textarea } from "@/shared/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select";
 import { Checkbox } from "@/shared/components/ui/checkbox";
 import { Link } from "react-router-dom";
 import { 
@@ -14,18 +12,18 @@ import {
   Zap
 } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/features/auth/contexts/AuthContext";
 
 const SignupUser = () => {
+  const navigate = useNavigate();
+  const { setUser } = useAuth();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
     password: "",
     confirmPassword: "",
-    currentRole: "",
-    experience: "",
-    goals: "",
-    interests: "",
     agreedToTerms: false
   });
 
@@ -52,35 +50,79 @@ const SignupUser = () => {
     }
   ];
 
-  const experiencelevels = [
-    "Student",
-    "Entry Level (0-2 years)",
-    "Mid Level (3-5 years)",
-    "Senior Level (6-10 years)",
-    "Executive Level (10+ years)"
-  ];
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const interestAreas = [
-    "Career Development",
-    "Leadership & Management",
-    "Entrepreneurship",
-    "Product Management",
-    "Software Engineering",
-    "Data Science",
-    "Marketing & Growth",
-    "Sales & Business Development",
-    "Design & UX",
-    "Finance & Investing",
-    "Operations & Strategy",
-    "Personal Development",
-    "Industry Transition",
-    "Other"
-  ];
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
+    setError('');
+    
     console.log("User signup:", formData);
-    // In a real app, this would handle the signup process
+    
+    try {
+      console.log('Making API request to:', '/api/users/register');
+      
+      const response = await fetch('/api/users/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          role: 'user'
+        }),
+      });
+
+      console.log('Response status:', response.status);
+      console.log('Response headers:', response.headers);
+
+      // Check if response has content
+      const responseText = await response.text();
+      console.log('Response text:', responseText);
+
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (parseError) {
+        console.error('JSON parse error:', parseError);
+        throw new Error('Invalid response from server');
+      }
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Signup failed');
+      }
+
+      console.log('Signup successful:', data);
+      
+      // Store the token and user in localStorage
+      if (data.data && data.data.token) {
+        localStorage.setItem('token', data.data.token);
+        
+        // Store user in the format expected by AuthContext
+        const userForAuth = {
+          id: data.data.user.id,
+          name: `${data.data.user.first_name} ${data.data.user.last_name}`,
+          email: data.data.user.email,
+          role: data.data.user.role,
+          avatar: `${data.data.user.first_name[0]}${data.data.user.last_name[0]}`
+        };
+        
+        // Set user in AuthContext
+        setUser(userForAuth);
+      }
+      
+      // Redirect to user dashboard instead of onboarding for now
+      navigate('/user-dashboard');
+    } catch (error) {
+      console.error('Signup error:', error);
+      setError(error instanceof Error ? error.message : 'Signup failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -229,66 +271,12 @@ const SignupUser = () => {
                     </div>
                   </div>
 
-                  {/* Professional Information */}
-                  <div className="space-y-4">
-                    <h3 className="font-semibold">Professional Background</h3>
-                    <div className="space-y-2">
-                      <Label htmlFor="currentRole">Current Role/Title</Label>
-                      <Input
-                        id="currentRole"
-                        value={formData.currentRole}
-                        onChange={(e) => handleInputChange("currentRole", e.target.value)}
-                        placeholder="e.g., Software Developer, Marketing Manager, Student"
-                        required
-                      />
+                  {/* Error Message */}
+                  {error && (
+                    <div className="p-3 bg-red-50 border border-red-200 rounded-md">
+                      <p className="text-sm text-red-600">{error}</p>
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="experience">Experience Level</Label>
-                      <Select value={formData.experience} onValueChange={(value) => handleInputChange("experience", value)}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select your experience level" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {experiencelevels.map((level) => (
-                            <SelectItem key={level} value={level}>
-                              {level}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-
-                  {/* Goals and Interests */}
-                  <div className="space-y-4">
-                    <h3 className="font-semibold">Goals & Interests</h3>
-                    <div className="space-y-2">
-                      <Label htmlFor="interests">Areas of Interest</Label>
-                      <Select value={formData.interests} onValueChange={(value) => handleInputChange("interests", value)}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="What would you like guidance on?" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {interestAreas.map((area) => (
-                            <SelectItem key={area} value={area}>
-                              {area}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="goals">What are your goals?</Label>
-                      <Textarea
-                        id="goals"
-                        value={formData.goals}
-                        onChange={(e) => handleInputChange("goals", e.target.value)}
-                        placeholder="Tell us what you'd like to achieve with mentorship..."
-                        rows={3}
-                        required
-                      />
-                    </div>
-                  </div>
+                  )}
 
                   {/* Terms and Conditions */}
                   <div className="flex items-center space-x-2">
@@ -312,9 +300,9 @@ const SignupUser = () => {
                   <Button 
                     type="submit" 
                     className="w-full" 
-                    disabled={!formData.agreedToTerms}
+                    disabled={!formData.agreedToTerms || isLoading}
                   >
-                    Create Account
+                    {isLoading ? 'Creating Account...' : 'Create Account'}
                   </Button>
 
                   <div className="text-center">

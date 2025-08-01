@@ -15,9 +15,11 @@ app.use(express.urlencoded({ extended: true }));
 
 // Import routes
 const userRoutes = require('./src/routes/userRoutes');
+// const onboardingRoutes = require('./src/routes/onboardingRoutes');
 
 // Routes
 app.use('/api/users', userRoutes);
+// app.use('/api/onboarding', onboardingRoutes);
 
 // Root endpoint
 app.get('/', (req, res) => {
@@ -32,7 +34,12 @@ app.get('/', (req, res) => {
       login: '/api/users/login',
       profile: '/api/users/profile',
       updateProfile: '/api/users/profile (PUT)',
-      allUsers: '/api/users/all (admin only)'
+      allUsers: '/api/users/all (admin only)',
+      onboarding: {
+        questions: '/api/onboarding/questions',
+        status: '/api/onboarding/status',
+        submit: '/api/onboarding/submit'
+      }
     }
   });
 });

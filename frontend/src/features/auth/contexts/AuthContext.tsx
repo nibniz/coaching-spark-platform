@@ -12,6 +12,7 @@ interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
+  setUser: (user: User) => void;
   isLoading: boolean;
 }
 
@@ -76,10 +77,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.removeItem('mentormatch-user');
   };
 
+  const setUserData = (userData: User) => {
+    setUser(userData);
+    localStorage.setItem('mentormatch-user', JSON.stringify(userData));
+  };
+
   const value = {
     user,
     login,
     logout,
+    setUser: setUserData,
     isLoading
   };
 

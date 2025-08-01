@@ -23,12 +23,9 @@ const SignupMentor = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    currentTitle: "",
-    company: "",
     yearsExperience: "",
     expertise: "",
     bio: "",
-    hourlyRate: "",
     agreedToTerms: false
   });
 
@@ -69,6 +66,21 @@ const SignupMentor = () => {
     "Operations & Strategy",
     "Human Resources",
     "Consulting",
+    "Fitness & Wellness Coaching",
+    "Life Coaching",
+    "Health & Nutrition",
+    "Personal Development",
+    "Mindfulness & Meditation",
+    "Relationship Coaching",
+    "Parenting & Family",
+    "Education & Learning",
+    "Creative Arts & Music",
+    "Language Learning",
+    "Financial Planning",
+    "Real Estate",
+    "Legal & Compliance",
+    "Healthcare & Medical",
+    "Non-profit & Social Impact",
     "Other"
   ];
 
@@ -233,27 +245,7 @@ const SignupMentor = () => {
 
                   {/* Professional Information */}
                   <div className="space-y-4">
-                    <h3 className="font-semibold">Professional Background</h3>
-                    <div className="space-y-2">
-                      <Label htmlFor="currentTitle">Current Job Title</Label>
-                      <Input
-                        id="currentTitle"
-                        value={formData.currentTitle}
-                        onChange={(e) => handleInputChange("currentTitle", e.target.value)}
-                        placeholder="e.g., Senior Product Manager"
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="company">Company</Label>
-                      <Input
-                        id="company"
-                        value={formData.company}
-                        onChange={(e) => handleInputChange("company", e.target.value)}
-                        placeholder="e.g., Google"
-                        required
-                      />
-                    </div>
+                    <h3 className="font-semibold">Professional Information</h3>
                     <div className="space-y-2">
                       <Label htmlFor="yearsExperience">Years of Experience</Label>
                       <Select value={formData.yearsExperience} onValueChange={(value) => handleInputChange("yearsExperience", value)}>
@@ -300,22 +292,7 @@ const SignupMentor = () => {
                         required
                       />
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="hourlyRate">Hourly Rate (USD)</Label>
-                      <Input
-                        id="hourlyRate"
-                        type="number"
-                        value={formData.hourlyRate}
-                        onChange={(e) => handleInputChange("hourlyRate", e.target.value)}
-                        placeholder="150"
-                        min="25"
-                        max="1000"
-                        required
-                      />
-                      <p className="text-sm text-muted-foreground">
-                        Most mentors charge between $50-$300 per hour
-                      </p>
-                    </div>
+
                   </div>
 
                   {/* Terms and Conditions */}
