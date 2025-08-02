@@ -4,6 +4,7 @@ require('dotenv').config();
 
 // Import routes
 const userRoutes = require('./src/routes/userRoutes');
+const paymentRoutes = require('./src/routes/paymentRoutes');
 
 // 🎓 Learning: Express is the web framework
 // - Creates HTTP server
@@ -21,8 +22,10 @@ const PORT = process.env.PORT || 3001;
 
 // Enable CORS for frontend
 app.use(cors({
-  origin: 'http://localhost:5173', // Your frontend URL
-  credentials: true
+  origin: ['http://localhost:5173', 'http://localhost:3000', 'http://localhost:8080', 'http://127.0.0.1:5173', 'http://127.0.0.1:3000', 'http://127.0.0.1:8080'], // Multiple frontend URLs for development
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 // Parse JSON bodies
@@ -46,6 +49,7 @@ app.get('/api/health', (req, res) => {
 
 // API routes
 app.use('/api/users', userRoutes);
+app.use('/api/payments', paymentRoutes);
 
 // 🎓 Learning: Error handling middleware
 // - Catches any errors that weren't handled by controllers

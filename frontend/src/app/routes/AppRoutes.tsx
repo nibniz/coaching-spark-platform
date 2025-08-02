@@ -11,6 +11,7 @@ import Login from "@/features/auth/Login";
 import MentorDashboard from "@/features/dashboard/MentorDashboard";
 import UserDashboard from "@/features/dashboard/UserDashboard";
 import MentorProfileSettings from "@/features/dashboard/MentorProfileSettings";
+import SearchPage from "@/features/search/SearchPage";
 
 export const AppRoutes = () => {
   return (
@@ -26,6 +27,7 @@ export const AppRoutes = () => {
       <Route path="/mentor-dashboard" element={<MentorDashboard />} />
       <Route path="/user-dashboard" element={<UserDashboard />} />
       <Route path="/mentor-profile-settings" element={<MentorProfileSettings />} />
+      <Route path="/search" element={<SearchPage />} />
       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
       <Route path="*" element={<NotFound />} />
     </Routes>

@@ -2,8 +2,10 @@ import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/components/ui/card";
 import { Badge } from "@/shared/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/ui/tabs";
+import { Loading } from "@/shared/components/ui/loading";
+import { useAuthGuard } from "@/shared/hooks/useAuthGuard";
 import { useAuth } from "@/features/auth/contexts/AuthContext";
-import { Link, Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { 
   Calendar,
   MessageSquare,
@@ -19,12 +21,41 @@ import {
   Eye,
   Edit
 } from "lucide-react";
+import { ThemeToggle } from "@/shared/components/ui/ThemeToggle";
 
 const MentorDashboard = () => {
-  const { user, logout } = useAuth();
+  const { user, isLoading: authLoading, isAuthenticated } = useAuthGuard();
+  const { logout } = useAuth();
 
-  if (!user || user.role !== 'mentor') {
-    return <Navigate to="/login" replace />;
+
+
+  // Show loading while auth is being checked
+  if (authLoading) {
+    return <Loading message="Checking authentication..." />;
+  }
+
+  // Show loading if not authenticated (will redirect via useAuthGuard)
+  if (!isAuthenticated) {
+    return <Loading message="Redirecting..." />;
+  }
+
+  // Check if user has mentor role - if not, show access denied but don't redirect
+  if (user && user.role !== 'mentor') {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="max-w-md w-full bg-white shadow-lg rounded-lg p-6">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Access Denied</h2>
+            <p className="text-gray-600 mb-6">
+              This dashboard is only available for mentors. You are logged in as a {user.role}.
+            </p>
+            <Link to="/user-dashboard" className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+              Go to User Dashboard
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   const stats = [
@@ -108,10 +139,10 @@ const MentorDashboard = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 sticky top-0 z-50">
+      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
-            <Link to="/" className="flex items-center space-x-2">
+            <Link to="/mentor-dashboard" className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-gradient-to-r from-primary to-primary-glow rounded-lg flex items-center justify-center">
                 <span className="text-primary-foreground font-bold text-sm">M</span>
               </div>
@@ -119,6 +150,7 @@ const MentorDashboard = () => {
             </Link>
             
             <div className="flex items-center space-x-4">
+              <ThemeToggle variant="icon-only" />
               <Button variant="ghost" size="sm">
                 <Bell className="w-4 h-4" />
               </Button>

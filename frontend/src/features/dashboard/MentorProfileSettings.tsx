@@ -6,8 +6,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/shared/components/ui/textarea";
 import { Badge } from "@/shared/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/ui/tabs";
+import { Loading } from "@/shared/components/ui/loading";
+import { useAuthGuard } from "@/shared/hooks/useAuthGuard";
 import { useAuth } from "@/features/auth/contexts/AuthContext";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { Link } from "react-router-dom";
 import { 
   Save,
   DollarSign,
@@ -16,13 +19,45 @@ import {
   Globe,
   Star,
   Calendar,
-  MessageSquare
+  MessageSquare,
+  ArrowLeft
 } from "lucide-react";
 
 const MentorProfileSettings = () => {
-  const { user } = useAuth();
+  const { user, isLoading: authLoading, isAuthenticated } = useAuthGuard();
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
+
+
+
+  // Show loading while auth is being checked
+  if (authLoading) {
+    return <Loading message="Checking authentication..." />;
+  }
+
+  // Show loading if not authenticated (will redirect via useAuthGuard)
+  if (!isAuthenticated) {
+    return <Loading message="Redirecting..." />;
+  }
+
+  // Check if user has mentor role - if not, show access denied but don't redirect
+  if (user && user.role !== 'mentor') {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="max-w-md w-full bg-white shadow-lg rounded-lg p-6">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Access Denied</h2>
+            <p className="text-gray-600 mb-6">
+              This page is only available for mentors. You are logged in as a {user.role}.
+            </p>
+            <Link to="/user-dashboard" className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+              Go to User Dashboard
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
   
   const [profileData, setProfileData] = useState({
     firstName: user?.name?.split(' ')[0] || '',
@@ -134,6 +169,14 @@ const MentorProfileSettings = () => {
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
+          <div className="flex items-center space-x-4 mb-4">
+            <Link to="/mentor-dashboard" onClick={() => console.log('🔙 Back button clicked - navigating to mentor dashboard')}>
+              <Button variant="ghost" size="sm" className="flex items-center space-x-2">
+                <ArrowLeft className="w-4 h-4" />
+                <span>Back to Dashboard</span>
+              </Button>
+            </Link>
+          </div>
           <h1 className="text-3xl font-bold">Profile Settings</h1>
           <p className="text-muted-foreground">Manage your mentor profile and preferences</p>
         </div>

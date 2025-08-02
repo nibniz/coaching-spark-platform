@@ -7,14 +7,26 @@ import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, LogIn } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/features/auth/contexts/AuthContext";
+import { useEffect } from "react";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, user, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
+
+  // Redirect if user is already logged in
+  useEffect(() => {
+    if (!authLoading && user) {
+      if (user.role === 'mentor') {
+        navigate('/mentor-dashboard', { replace: true });
+      } else {
+        navigate('/user-dashboard', { replace: true });
+      }
+    }
+  }, [user, authLoading, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,8 +36,9 @@ const Login = () => {
     try {
       const success = await login(email, password);
       if (success) {
-        // Navigate based on user role
-        if (email.includes("mentor")) {
+        // Get user data to determine role
+        const userData = JSON.parse(localStorage.getItem('mentormatch-user') || '{}');
+        if (userData.role === 'mentor') {
           navigate("/mentor-dashboard");
         } else {
           navigate("/user-dashboard");
@@ -39,6 +52,30 @@ const Login = () => {
       setIsLoading(false);
     }
   };
+
+  // Show loading while checking auth
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="flex flex-col items-center space-y-4">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <p className="text-gray-600">Checking authentication...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't show login form if user is already logged in
+  if (user) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="flex flex-col items-center space-y-4">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <p className="text-gray-600">Redirecting to dashboard...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">

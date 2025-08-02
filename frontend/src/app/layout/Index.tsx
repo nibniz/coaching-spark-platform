@@ -1,7 +1,20 @@
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/components/ui/card";
 import { Badge } from "@/shared/components/ui/badge";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { Header } from "@/shared/components/layout/Header";
+import { useAuth } from "@/features/auth/contexts/AuthContext";
+import { useEffect } from "react";
+import { SearchBar } from "@/shared/components/ui/SearchBar";
+import { ServiceCategories } from "@/shared/components/ui/ServiceCategories";
+import { TrustIndicators, CompactTrustIndicators } from "@/shared/components/ui/TrustIndicators";
+import { HeroCarousel, defaultCarouselSlides } from "@/shared/components/ui/HeroCarousel";
+import { 
+  WellnessInstructors, 
+  YogaPrograms, 
+  WellnessEvents
+} from "@/shared/components/ui/WellnessFeatures";
+import { categories, mentors, programs, events, getPopularSkills } from "@/shared/data/mockData";
 import { 
   Search, 
   Users, 
@@ -13,34 +26,66 @@ import {
   CheckCircle,
   ArrowRight,
   Play,
-  Menu,
-  X
+  Zap,
+  Target,
+  Globe
 } from "lucide-react";
-import { useState } from "react";
 
 const Index = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, isLoading } = useAuth();
+  const navigate = useNavigate();
+
+  // Search suggestions and popular searches
+  const searchSuggestions = [
+    { id: '1', text: 'Career Development', type: 'category' as const, count: 2500 },
+    { id: '2', text: 'Health & Wellness', type: 'category' as const, count: 1800 },
+    { id: '3', text: 'Yoga Classes', type: 'skill' as const, count: 1200 },
+    { id: '4', text: 'Leadership Skills', type: 'skill' as const, count: 1600 },
+    { id: '5', text: 'Nutrition Coaching', type: 'skill' as const, count: 900 },
+    { id: '6', text: 'Mindfulness', type: 'skill' as const, count: 1100 },
+    { id: '7', text: 'Sarah Chen', type: 'mentor' as const, count: 127 },
+    { id: '8', text: 'Michael Rodriguez', type: 'mentor' as const, count: 89 },
+    { id: '9', text: 'Emma Thompson', type: 'mentor' as const, count: 156 }
+  ];
+
+  const popularSearches = getPopularSkills();
+
+  // Handle search
+  const handleSearch = (query: string) => {
+    navigate(`/search?search=${encodeURIComponent(query)}`);
+  };
+
+  // Redirect logged-in users to their dashboard
+  useEffect(() => {
+    if (!isLoading && user) {
+      if (user.role === 'mentor') {
+        navigate('/mentor-dashboard', { replace: true });
+      } else {
+        navigate('/user-dashboard', { replace: true });
+      }
+    }
+  }, [user, isLoading, navigate]);
 
   const features = [
     {
-      icon: Search,
-      title: "Smart Discovery",
-      description: "Find the perfect mentor using AI-powered matching based on your goals and expertise needs."
+      icon: Zap,
+      title: "AI-Powered Matching",
+      description: "Our smart algorithm matches you with the perfect mentor based on your goals, experience, and preferences."
     },
     {
       icon: Shield,
       title: "Verified Experts",
-      description: "All mentors are thoroughly vetted with verified credentials and authentic reviews."
+      description: "All mentors are thoroughly vetted with verified credentials, background checks, and authentic reviews."
     },
     {
-      icon: Calendar,
-      title: "Flexible Booking",
-      description: "Schedule sessions that fit your timeline with integrated calendar and payment processing."
+      icon: Target,
+      title: "Goal-Focused Sessions",
+      description: "Every session is tailored to your specific goals with actionable plans and measurable progress tracking."
     },
     {
-      icon: MessageSquare,
-      title: "Ongoing Support",
-      description: "Get continuous guidance through direct messaging and progress tracking tools."
+      icon: Globe,
+      title: "Global Network",
+      description: "Connect with mentors from top companies worldwide, available 24/7 across all time zones."
     }
   ];
 
@@ -58,155 +103,183 @@ const Index = () => {
     "Track your progress and growth"
   ];
 
+  // Show loading while checking auth
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="flex flex-col items-center space-y-4">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <p className="text-gray-600">Checking authentication...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't show home page if user is already logged in
+  if (user) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="flex flex-col items-center space-y-4">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <p className="text-gray-600">Redirecting to dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation */}
-      <header className="border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex items-center justify-between h-16">
-            {/* Left side: Logo + Navigation */}
-            <div className="flex items-center space-x-8 -ml-2">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-r from-primary to-primary-glow rounded-lg flex items-center justify-center">
-                  <span className="text-primary-foreground font-bold text-base">M</span>
-                </div>
-                <span className="text-2xl font-bold">MentorMatch</span>
-              </div>
-              
-              <nav className="hidden md:flex items-center space-x-8">
-                <Link to="/mentors" className="text-foreground hover:text-primary transition-colors">
-                  Find Mentors
-                </Link>
-                <Link to="/how-it-works" className="text-foreground hover:text-primary transition-colors">
-                  How It Works
-                </Link>
-                <Link to="/pricing" className="text-foreground hover:text-primary transition-colors">
-                  Pricing
-                </Link>
-                <Link to="/about" className="text-foreground hover:text-primary transition-colors">
-                  About Us
-                </Link>
-                <Link to="/contact" className="text-foreground hover:text-primary transition-colors">
-                  Contact
-                </Link>
-                <Link to="/resources" className="text-foreground hover:text-primary transition-colors">
-                  Resources
-                </Link>
-              </nav>
+      <Header 
+        showAuthButtons={!user} 
+        showUserMenu={!!user}
+        showNavigation={true}
+        logoLink={user ? (user.role === 'mentor' ? '/mentor-dashboard' : '/user-dashboard') : undefined}
+      />
+
+      {/* Hero Carousel Section */}
+      <HeroCarousel 
+        slides={defaultCarouselSlides}
+        autoPlay={true}
+        autoPlayInterval={6000}
+        showNavigation={true}
+        showIndicators={true}
+      >
+        {/* Search Bar Overlay */}
+        <div className="mt-8">
+          <SearchBar
+            placeholder="What do you want to learn?"
+            suggestions={searchSuggestions}
+            popularSearches={popularSearches}
+            onSearch={handleSearch}
+            className="mb-6"
+          />
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link to="/mentors">
+              <Button size="lg" className="w-full sm:w-auto bg-white text-black hover:bg-gray-100 border-2 border-white">
+                Browse All Mentors
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+            <Link to="/signup/mentor">
+              <Button size="lg" className="w-full sm:w-auto bg-primary text-primary-foreground hover:bg-primary/90 border-2 border-primary">
+                <Play className="mr-2 h-4 w-4" />
+                Become a Mentor
+              </Button>
+            </Link>
+          </div>
+
+          <div className="flex items-center space-x-8 pt-6 justify-center">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-white">1000+</div>
+              <div className="text-sm text-white/80">Expert Mentors</div>
             </div>
-
-            {/* Right side: Action buttons + Mobile menu */}
-            <div className="flex items-center space-x-4">
-              <div className="hidden md:flex items-center space-x-4">
-                <Link to="/login" className="border border-primary text-primary hover:text-primary px-4 py-2 rounded-full transition-colors">
-                  Login
-                </Link>
-                <Link to="/signup/mentor">
-                  <Button className="rounded-full">Become a Mentor</Button>
-                </Link>
-              </div>
-
-              <button 
-                className="md:hidden"
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-              >
-                {isMenuOpen ? <X /> : <Menu />}
-              </button>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-white">50k+</div>
+              <div className="text-sm text-white/80">Sessions Completed</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-white">4.9★</div>
+              <div className="text-sm text-white/80">Average Rating</div>
             </div>
           </div>
         </div>
+      </HeroCarousel>
 
-        {/* Mobile menu */}
-        {isMenuOpen && (
-          <div className="md:hidden border-t bg-white">
-            <div className="max-w-7xl mx-auto px-6 py-4 space-y-4">
-              <Link to="/mentors" className="block text-foreground hover:text-primary transition-colors">
-                Find Mentors
-              </Link>
-              <Link to="/how-it-works" className="block text-foreground hover:text-primary transition-colors">
-                How It Works
-              </Link>
-              <Link to="/pricing" className="block text-foreground hover:text-primary transition-colors">
-                Pricing
-              </Link>
-              <Link to="/about" className="block text-foreground hover:text-primary transition-colors">
-                About Us
-              </Link>
-              <Link to="/contact" className="block text-foreground hover:text-primary transition-colors">
-                Contact
-              </Link>
-              <Link to="/resources" className="block text-foreground hover:text-primary transition-colors">
-                Resources
-              </Link>
-              <Link to="/login" className="block border border-primary text-primary hover:text-primary px-4 py-2 rounded-full transition-colors text-center">
-                Login
-              </Link>
-              <Link to="/signup/mentor" className="block">
-                <Button className="w-full rounded-full">Become a Mentor</Button>
-              </Link>
-            </div>
+      {/* Service Categories Section */}
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="text-center space-y-4 mb-16">
+            <h2 className="text-3xl lg:text-4xl font-bold">
+              Popular Categories
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Explore our most popular mentoring categories and find the perfect expert for your goals.
+            </p>
           </div>
-        )}
-      </header>
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 to-primary-glow/10">
-        <div className="container mx-auto px-4 py-20 lg:py-32">
-          <div className="flex flex-col items-center text-center max-w-4xl mx-auto">
-            <div className="space-y-8 w-full">
-              <div className="space-y-6">
-                <Badge variant="secondary" className="w-fit">
-                  🚀 Launch Your Growth Journey
-                </Badge>
-                <h1 className="text-4xl lg:text-6xl font-bold leading-tight">
-                  Connect with{" "}
-                  <span className="bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
-                    Expert Mentors
-                  </span>{" "}
-                  Who Accelerate Your Success
-                </h1>
-                <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                  Whether you're seeking career guidance, skill development, or life coaching, 
-                  find verified experts who understand your goals and provide personalized guidance.
-                </p>
-              </div>
-              
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link to="/mentors">
-                  <Button size="lg" className="w-full sm:w-auto">
-                    Find Your Mentor
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </Link>
-                <Link to="/signup/mentor">
-                  <Button variant="outline" size="lg" className="w-full sm:w-auto">
-                    <Play className="mr-2 h-4 w-4" />
-                    Become a Mentor
-                  </Button>
-                </Link>
-              </div>
+          <ServiceCategories 
+            categories={categories}
+            className="mb-12"
+          />
 
-              <div className="flex items-center space-x-8 pt-4 justify-center">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">1000+</div>
-                  <div className="text-sm text-muted-foreground">Expert Mentors</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">50k+</div>
-                  <div className="text-sm text-muted-foreground">Sessions Completed</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">4.9★</div>
-                  <div className="text-sm text-muted-foreground">Average Rating</div>
-                </div>
-              </div>
-            </div>
+          <div className="text-center">
+            <Link to="/mentors">
+              <Button variant="outline" size="lg">
+                View All Categories
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
 
+      {/* Wellness Section */}
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="text-center space-y-4 mb-16">
+            <h2 className="text-3xl lg:text-4xl font-bold">
+              Health & Wellness
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Transform your life with expert health instructors, yoga programs, and wellness events.
+            </p>
+          </div>
+
+          {/* Wellness Instructors */}
+          <div className="mb-16">
+            <div className="flex items-center justify-between mb-8">
+              <h3 className="text-2xl font-bold">Featured Health Instructors</h3>
+              <Link to="/mentors?category=health-wellness">
+                <Button variant="outline">
+                  View All Instructors
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+            <WellnessInstructors instructors={mentors.filter(m => m.category === 'health-wellness')} />
+          </div>
+
+          {/* Yoga Programs */}
+          <div className="mb-16">
+            <div className="flex items-center justify-between mb-8">
+              <h3 className="text-2xl font-bold">Yoga & Wellness Programs</h3>
+              <Link to="/programs">
+                <Button variant="outline">
+                  Browse All Programs
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+            <YogaPrograms programs={programs.filter(p => p.category === 'health-wellness')} />
+          </div>
+
+          {/* Wellness Events */}
+          <div>
+            <div className="flex items-center justify-between mb-8">
+              <h3 className="text-2xl font-bold">Upcoming Events & Workshops</h3>
+              <Link to="/events">
+                <Button variant="outline">
+                  View All Events
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+            <WellnessEvents events={events.filter(e => e.category === 'health-wellness')} />
+          </div>
+        </div>
+      </section>
+
+      {/* Trust Indicators Section */}
+      <section className="py-12 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <TrustIndicators />
+        </div>
+      </section>
+
       {/* Features Section */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center space-y-4 mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold">
@@ -234,6 +307,52 @@ const Index = () => {
                 </CardContent>
               </Card>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="text-center space-y-4 mb-16">
+            <h2 className="text-3xl lg:text-4xl font-bold">
+              How It Works
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Get started with mentoring in just three simple steps
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            <div className="text-center space-y-4">
+              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+                <span className="text-2xl font-bold text-primary">1</span>
+              </div>
+              <h3 className="text-xl font-semibold">Find Your Mentor</h3>
+              <p className="text-muted-foreground">
+                Search through our verified experts and find the perfect mentor for your goals.
+              </p>
+            </div>
+
+            <div className="text-center space-y-4">
+              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+                <span className="text-2xl font-bold text-primary">2</span>
+              </div>
+              <h3 className="text-xl font-semibold">Book a Session</h3>
+              <p className="text-muted-foreground">
+                Choose your preferred time slot and book a session with secure payment.
+              </p>
+            </div>
+
+            <div className="text-center space-y-4">
+              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+                <span className="text-2xl font-bold text-primary">3</span>
+              </div>
+              <h3 className="text-xl font-semibold">Start Learning</h3>
+              <p className="text-muted-foreground">
+                Connect with your mentor and begin your personalized learning journey.
+              </p>
+            </div>
           </div>
         </div>
       </section>
